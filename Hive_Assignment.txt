@@ -1,0 +1,1263 @@
+
+Hive Query-create database hive_practice; 
+Query Output- Database has been created 
+
+Hive Query-show databases;
+Query Output-
++---------------------+
+|    database_name    |
++---------------------+
+| default             |
+| foodmart            |
+| hive_practice       |
+| information_schema  |
+| sys                 |
++---------------------+
+
+Hive Query-create database hive_custom location '/user/root/hive_practice/';
+Query output-database has been created
+
+Hive Query-describe database hive_custom;
+Query output-
++--------------+----------+----------------------------------------------------+-------------+-------------+-------------+
+|   db_name    | comment  |                      location                      | owner_name  | owner_type  | parameters  |
++--------------+----------+----------------------------------------------------+-------------+-------------+-------------+
+| hive_custom  |          | hdfs://sandbox-hdp.hortonworks.com:8020/user/root/hive_practice | hive        | USER        |             |
++--------------+----------+----------------------------------------------------+-------------+-------------+-------------+
+
+Hive Query-show databases;
+Query Output-
+
++---------------------+
+|    database_name    |
++---------------------+
+| default             |
+| foodmart            |
+| hive_custom         |
+| hive_practice       |
+| information_schema  |
+| sys                 |
++---------------------+
+
+Hive Query-show databases like 'hive.*';
+Query Output-
++----------------+
+| database_name  |
++----------------+
+| hive_custom    |
+| hive_practice  |
++----------------+
+
+Hive Query-drop database hive_custom;
+Query Output-database has been dropped;
+
+Hive Query-show databases;
+Query Output-
++---------------------+
+|    database_name    |
++---------------------+
+| default             |
+| foodmart            |
+| hive_practice       |
+| information_schema  |
+| sys                 |
++---------------------+
+
+
+Hive Query-show tables;
+Query Output-No Table has been created yet hence returns null
++-----------+
+| tab_name  |
++-----------+
++-----------+
+
+
+Hive Query - create table emp_details ( emp_name string,unit string,exp int,location string) row format delimited fields terminated by ',' ;
+Query Output-emp_details table has been created
+
+Hive Query-show tables;
+Query output-
++--------------+
+|   tab_name   |
++--------------+
+| emp_details  |
++--------------+
+
+Hive Query-alter table emp_details rename to employee_details;
+Query output-Table name has been changed;
+
+
+Hive Query-show tables;
+Quer Output-
++-------------------+
+|     tab_name      |
++-------------------+
+| employee_details  |
++-------------------+
+
+
+Hive Query-create table india_captains (name string,unit string,id int,location string) row format delimited fields terminated by ',' stored as textfile;
+Query output -Table is created with format as TextFormat
+
+Hive Query-show create table india_captains;
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `india_captains`(                     |
+|   `name` string,                                   |
+|   `unit` string,                                   |
+|   `id` int,                                        |
+|   `location` string)                               |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'  |
+| WITH SERDEPROPERTIES (                             |
+|   'field.delim'=',',                               |
+|   'serialization.format'=',')                      |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/india_captains' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1626602567')            |
++----------------------------------------------------+
+
+
+
+Unix Command-vi Input.txt
+
+Data present in Input.txt-
+
+virat kohli,captain,1,INDIA
+Dhoni,wicket keeper,2,INDIA
+Warner,srh captain,1,SRH
+williamson,srh,2,SRH
+abd,wicket keeper,1,RCB
+
+
+
+
+
+Hive Query-load data local inpath '/Hive_Practice/Input.txt' overwrite into table india_captains;
+Query output-The data present in the Input.txt has been loaded into india_captains.
+
+Hive Query-select * from india_captains;
+Query output-
++----------------------+----------------------+--------------------+--------------------------+
+| india_captains.name  | india_captains.unit  | india_captains.id  | india_captains.location  |
++----------------------+----------------------+--------------------+--------------------------+
+| virat kohli          | captain              | 1                  | INDIA                    |
+| Dhoni                | wicket keeper        | 2                  | INDIA                    |
+| Warner               | srh captain          | 1                  | SRH                      |
+| williamson           | srh                  | 2                  | SRH                      |
+| abd                  | wicket keeper        | NULL               | NULL                     |
++----------------------+----------------------+--------------------+--------------------------+
+
+Hive Query-select * from india_captains limit 2;
+Query Output-
++----------------------+----------------------+--------------------+--------------------------+
+| india_captains.name  | india_captains.unit  | india_captains.id  | india_captains.location  |
++----------------------+----------------------+--------------------+--------------------------+
+| virat kohli          | captain              | 1                  | INDIA                    |
+| Dhoni                | wicket keeper        | 2                  | INDIA                    |
++----------------------+----------------------+--------------------+--------------------------+
+
+Hive Query-create view india_captains_view select * from india_captains limit 3;
+Query output-view has been created with the name india_captains_view;
+
+
+Hive Query-show views;
+Query Output-
+
++----------------------+
+|       tab_name       |
++----------------------+
+| india_captains_view  |
++----------------------+
+
+Hive Query-select * from india_captains order by id;
+Query Output-
++----------------------+----------------------+--------------------+--------------------------+
+| india_captains.name  | india_captains.unit  | india_captains.id  | india_captains.location  |
++----------------------+----------------------+--------------------+--------------------------+
+| abd                  | wicket keeper        | NULL               | NULL                     |
+| virat kohli          | captain              | 1                  | INDIA                    |
+| Warner               | srh captain          | 1                  | SRH                      |
+| Dhoni                | wicket keeper        | 2                  | INDIA                    |
+| williamson           | srh                  | 2                  | SRH                      |
++----------------------+----------------------+--------------------+--------------------------+
+
+
+Hive Query-create external table cricket_players (name string,country string) row format delimited fields terminated by ',' stored as TEXTFILE
+Query Output-External Table is created
+
+
+
+Unix Command-vi Input_External.txt
+
+Input Data present in Input_External.txt-
+
+Kohli,IND
+Dhoni,IND
+WARNER,AUS
+ABD,SA
+Williamson,NZ
+
+
+
+
+Hive Query-load data local inpath '/Hive_Practice/Input_External.txt' overwrite into table cricket_players;
+Query output-Input Data is loaded into external table
+
+Hive Query-select * from cricket_players limit 2;
+Query output-
++-----------------------+--------------------------+
+| cricket_players.name  | cricket_players.country  |
++-----------------------+--------------------------+
+| Kohli                 | IND                      |
+| Dhoni                 | IND                      |
++-----------------------+--------------------------+
+
+
+**************************************SERDE Properties***********************
+
+Unix Command- vi serde_csv_data.csv
+
+Input Data present in serde_csv_data.csv -
+
+
+Name,Location,Highest_Score
+Kohli,IND,183
+DHONI,IND,183
+Clarke,AUS,104
+
+****Loading CSV data into table using serde properties and tblproperties ******
+
+Hive Query-create table tbl_csvserde (name string,country string,highest_score int) row format serde 'org.apache.hadoop.hive.serde2.OpenCSVSerde' with serdeproperties ('seperatorChar'=',') stored as TEXTFILE tblproperties('skip.header.line.count'='1');
+Query Output-Table has been created with following properties
+
+
+Hive Query-show create table tbl_csvserde;
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `tbl_csvserde`(                       |
+|   `name` string COMMENT 'from deserializer',       |
+|   `country` string COMMENT 'from deserializer',    |
+|   `highest_score` string COMMENT 'from deserializer') |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.OpenCSVSerde'     |
+| WITH SERDEPROPERTIES (                             |
+|   'seperatorChar'=',')                             |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_csvserde' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'skip.header.line.count'='1',                    |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627139394')            |
++----------------------------------------------------+
+
+
+Hive Query-load data local inpath '/Hive_Practice/serde_csv_data.csv' overwrite into table tbl_csvserde;
+Query Output-The Input file data is loaded into tbl_csvserde
+
+Hive Query-select * from tbl_csvserde;
+Query Output-
++--------------------+-----------------------+-----------------------------+
+| tbl_csvserde.name  | tbl_csvserde.country  | tbl_csvserde.highest_score  |
++--------------------+-----------------------+-----------------------------+
+| Kohli              | IND                   | 183                         |
+| DHONI              | IND                   | 183                         |
+| Clarke             | AUS                   | 104                         |
++--------------------+-----------------------+-----------------------------+
+
+
+Hive Query-select highest_score from tbl_csvserde;
+Query Output-
++----------------+
+| highest_score  |
++----------------+
+| 183            |
+| 183            |
+| 104            |
++----------------+
+
+*****Loading JSON Data into table using serde properties*****
+
+Unix Command-vi serde_json_data.json;
+
+Input Data present in the serde_json_data.json-
+
+{"name":"Kohli","country":"IND","role":["Batsman","Bowler"]}
+{"name":"clarke","country":"AUS","role":["Batsman","Bowler"]}
+{"name":"Dhoni","country":"IND","role":["Batsman","wicket-keeper"]}
+
+
+Hive Query-create table tbl_jsonserde (name string,country string,role array<string>) row format serde 'org.apache.hive.hcatalog.data.JsonSerDe' stored as TEXTFILE;
+Query output-Table is created
+
+
+Hive Query-show create table tbl_jsonserde;
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `tbl_jsonserde`(                      |
+|   `name` string COMMENT 'from deserializer',       |
+|   `country` string COMMENT 'from deserializer',    |
+|   `role` array<string> COMMENT 'from deserializer') |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hive.hcatalog.data.JsonSerDe'        |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_jsonserde' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627148204')            |
++----------------------------------------------------+
+
+
+Hive Query-load data local inpath '/Hive_Practice/serde_json_data.json' overwrite into table tbl_jsonserde;
+Query Output- Input Data is loaded into tbl_jsonserde;
+
+
+Hive Query-select * from tbl_jsonserde;
+Query Output-
++---------------------+------------------------+------------------------------+
+| tbl_jsonserde.name  | tbl_jsonserde.country  |      tbl_jsonserde.role      |
++---------------------+------------------------+------------------------------+
+| Kohli               | IND                    | ["Batsman","Bowler"]         |
+| clarke              | AUS                    | ["Batsman","Bowler"]         |
+| Dhoni               | IND                    | ["Batsman","wicket-keeper"]  |
++---------------------+------------------------+------------------------------+
+
+Hive Query-select role[1] from tbl_jsonserde;
+Query Output-
++----------------+
+|      _c0       |
++----------------+
+| Bowler         |
+| Bowler         |
+| wicket-keeper  |
++----------------+
+
+****Loading the data with regex patterns ****
+
+
+Unix Command-vi regex_data.txt
+
+Input Data present in the file-
+
+host1/amit@gmail
+host2/sumit@facebook
+host3/raghav@gmail
+host4/rohit@gmail
+
+
+
+
+Hive Query-create table tbl_regexserde (host string,name string,domain string) row format serde 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe' with serdeproperties('input.regex'='(.*)/(.*)@(.*)','output.string.format'='%1$s %2$s %3$s') stored as TEXTFILE;
+
+Query Output-Table has been created
+
+Hive Query-load data local inpath '/Hive_Practice/regex_data.txt' overwrite into table tbl_regexserde;
+Query Output-Input Data has been loaded
+
+Hive Query-show create table tbl_regexserde;
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `tbl_regexserde`(                     |
+|   `host` string COMMENT 'from deserializer',       |
+|   `name` string COMMENT 'from deserializer',       |
+|   `domain` string COMMENT 'from deserializer')     |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'  |
+| WITH SERDEPROPERTIES (                             |
+|   'input.regex'='(.*)/(.*)@(.*)',                  |
+|   'output.string.format'='%1 %2')                  |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_regexserde' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627160837')            |
++----------------------------------------------------+
+
+Hive Query-select * from tbl_regexserde;
+Query Output-
++----------------------+----------------------+------------------------+
+| tbl_regexserde.host  | tbl_regexserde.name  | tbl_regexserde.domain  |
++----------------------+----------------------+------------------------+
+| host1                | amit                 | gmail                  |
+| host2                | sumit                | facebook               |
+| host3                | raghav               | gmail                  |
+| host4                | rohit                | gmail                  |
++----------------------+----------------------+------------------------+
+
+
+***************************************** File Formats*************************************
+
+
+****Creation of Table in Sequence File Format*****
+Hive Query-create table tbl_seq (day int,month int,year int) row format delimited fields terminated by ',' stored as SEQUENCEFILE;
+Query Output-Table has been created as SEQUENCEFILE;
+
+Hive Query-show create table tbl_seq;
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `tbl_seq`(                            |
+|   `day` int,                                       |
+|   `month` int,                                     |
+|   `year` int)                                      |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'  |
+| WITH SERDEPROPERTIES (                             |
+|   'field.delim'=',',                               |
+|   'serialization.format'=',')                      |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.SequenceFileInputFormat'  |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_seq' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627288531')            |
++----------------------------------------------------+
+
+Hive Query-load data local inpath '/Hive_Practice/File_Formats_Data.txt' overwrite into table tbl_seq;
+Query Output- Error while loading the data because the table is in sequence file format but loading the text data;
+
+********Creation of Table with ORC Format********
+
+Hive Query-create table tbl_orc (day int,month int,year int) row format delimited fields terminated by ',' stored as ORCFILE;
+Query Output-Table has been created with ORCFILE Format;
+
+Hive Query-show create table tbl_orc;
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `tbl_orc`(                            |
+|   `day` int,                                       |
+|   `month` int,                                     |
+|   `year` int)                                      |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.ql.io.orc.OrcSerde'      |
+| WITH SERDEPROPERTIES (                             |
+|   'field.delim'=',',                               |
+|   'serialization.format'=',')                      |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.hive.ql.io.orc.OrcInputFormat'  |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_orc' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='default',            |
+|   'transient_lastDdlTime'='1627289813')            |
++----------------------------------------------------+
+
+
+*********Creation of Table with RC Format*********
+
+Hive Query-create table tbl_rc (day int,month int,year int) row format delimited fields terminated by ',' stored as RCFILE;
+
+Query Output-Table has been created with RC Format;
+
+
+Hive Query-show create table tbl_rc;
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `tbl_rc`(                             |
+|   `day` int,                                       |
+|   `month` int,                                     |
+|   `year` int)                                      |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe'  |
+| WITH SERDEPROPERTIES (                             |
+|   'field.delim'=',',                               |
+|   'serialization.format'=',')                      |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.hive.ql.io.RCFileInputFormat'  |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.RCFileOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_rc' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627290117')            |
++----------------------------------------------------+
+
+
+******Creation of Table with PARQUET Format*************
+Hive Query-create table tbl_parquet (day int,month int,year int) row format delimited fields terminated by ',' stored as PARQUETFILE;
+Query Output-Table has been created with PARQUET Format
+
+
+Hive Query-show create table tbl_parquet;
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `tbl_parquet`(                        |
+|   `day` int,                                       |
+|   `month` int,                                     |
+|   `year` int)                                      |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'  |
+| WITH SERDEPROPERTIES (                             |
+|   'field.delim'=',',                               |
+|   'serialization.format'=',')                      |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'  |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_parquet' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627290435')            |
++----------------------------------------------------+
+
+*************Describe all formats **************
+Hive Query-describe formatted tbl_seq;
+Query Output-
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+|           col_name            |                     data_type                      |                      comment                       |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+| # col_name                    | data_type                                          | comment                                            |
+| day                           | int                                                |                                                    |
+| month                         | int                                                |                                                    |
+| year                          | int                                                |                                                    |
+|                               | NULL                                               | NULL                                               |
+| # Detailed Table Information  | NULL                                               | NULL                                               |
+| Database:                     | default                                            | NULL                                               |
+| OwnerType:                    | USER                                               | NULL                                               |
+| Owner:                        | hive                                               | NULL                                               |
+| CreateTime:                   | Mon Jul 26 08:35:31 UTC 2021                       | NULL                                               |
+| LastAccessTime:               | UNKNOWN                                            | NULL                                               |
+| Retention:                    | 0                                                  | NULL                                               |
+| Location:                     | hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_seq | NULL                                               |
+| Table Type:                   | MANAGED_TABLE                                      | NULL                                               |
+| Table Parameters:             | NULL                                               | NULL                                               |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"day\":\"true\",\"month\":\"true\",\"year\":\"true\"}} |
+|                               | bucketing_version                                  | 2                                                  |
+|                               | numFiles                                           | 0                                                  |
+|                               | numRows                                            | 0                                                  |
+|                               | rawDataSize                                        | 0                                                  |
+|                               | totalSize                                          | 0                                                  |
+|                               | transactional                                      | true                                               |
+|                               | transactional_properties                           | insert_only                                        |
+|                               | transient_lastDdlTime                              | 1627288531                                         |
+|                               | NULL                                               | NULL                                               |
+| # Storage Information         | NULL                                               | NULL                                               |
+| SerDe Library:                | org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe | NULL                                               |
+| InputFormat:                  | org.apache.hadoop.mapred.SequenceFileInputFormat   | NULL                                               |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat | NULL                                               |
+| Compressed:                   | No                                                 | NULL                                               |
+| Num Buckets:                  | -1                                                 | NULL                                               |
+| Bucket Columns:               | []                                                 | NULL                                               |
+| Sort Columns:                 | []                                                 | NULL                                               |
+| Storage Desc Params:          | NULL                                               | NULL                                               |
+|                               | field.delim                                        | ,                                                  |
+|                               | serialization.format                               | ,                                                  |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+
+Hive Query-describe formatted tbl_orc;
+Query Output-
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+|           col_name            |                     data_type                      |                      comment                       |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+| # col_name                    | data_type                                          | comment                                            |
+| day                           | int                                                |                                                    |
+| month                         | int                                                |                                                    |
+| year                          | int                                                |                                                    |
+|                               | NULL                                               | NULL                                               |
+| # Detailed Table Information  | NULL                                               | NULL                                               |
+| Database:                     | default                                            | NULL                                               |
+| OwnerType:                    | USER                                               | NULL                                               |
+| Owner:                        | hive                                               | NULL                                               |
+| CreateTime:                   | Mon Jul 26 08:56:53 UTC 2021                       | NULL                                               |
+| LastAccessTime:               | UNKNOWN                                            | NULL                                               |
+| Retention:                    | 0                                                  | NULL                                               |
+| Location:                     | hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_orc | NULL                                               |
+| Table Type:                   | MANAGED_TABLE                                      | NULL                                               |
+| Table Parameters:             | NULL                                               | NULL                                               |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"day\":\"true\",\"month\":\"true\",\"year\":\"true\"}} |
+|                               | bucketing_version                                  | 2                                                  |
+|                               | numFiles                                           | 0                                                  |
+|                               | numRows                                            | 0                                                  |
+|                               | rawDataSize                                        | 0                                                  |
+|                               | totalSize                                          | 0                                                  |
+|                               | transactional                                      | true                                               |
+|                               | transactional_properties                           | default                                            |
+|                               | transient_lastDdlTime                              | 1627289813                                         |
+|                               | NULL                                               | NULL                                               |
+| # Storage Information         | NULL                                               | NULL                                               |
+| SerDe Library:                | org.apache.hadoop.hive.ql.io.orc.OrcSerde          | NULL                                               |
+| InputFormat:                  | org.apache.hadoop.hive.ql.io.orc.OrcInputFormat    | NULL                                               |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat   | NULL                                               |
+| Compressed:                   | No                                                 | NULL                                               |
+| Num Buckets:                  | -1                                                 | NULL                                               |
+| Bucket Columns:               | []                                                 | NULL                                               |
+| Sort Columns:                 | []                                                 | NULL                                               |
+| Storage Desc Params:          | NULL                                               | NULL                                               |
+|                               | field.delim                                        | ,                                                  |
+|                               | serialization.format                               | ,                                                  |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+
+Hive Query-describe formatted tbl_rc;
+Query Output-
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+|           col_name            |                     data_type                      |                      comment                       |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+| # col_name                    | data_type                                          | comment                                            |
+| day                           | int                                                |                                                    |
+| month                         | int                                                |                                                    |
+| year                          | int                                                |                                                    |
+|                               | NULL                                               | NULL                                               |
+| # Detailed Table Information  | NULL                                               | NULL                                               |
+| Database:                     | default                                            | NULL                                               |
+| OwnerType:                    | USER                                               | NULL                                               |
+| Owner:                        | hive                                               | NULL                                               |
+| CreateTime:                   | Mon Jul 26 09:01:57 UTC 2021                       | NULL                                               |
+| LastAccessTime:               | UNKNOWN                                            | NULL                                               |
+| Retention:                    | 0                                                  | NULL                                               |
+| Location:                     | hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_rc | NULL                                               |
+| Table Type:                   | MANAGED_TABLE                                      | NULL                                               |
+| Table Parameters:             | NULL                                               | NULL                                               |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"day\":\"true\",\"month\":\"true\",\"year\":\"true\"}} |
+|                               | bucketing_version                                  | 2                                                  |
+|                               | numFiles                                           | 0                                                  |
+|                               | numRows                                            | 0                                                  |
+|                               | rawDataSize                                        | 0                                                  |
+|                               | totalSize                                          | 0                                                  |
+|                               | transactional                                      | true                                               |
+|                               | transactional_properties                           | insert_only                                        |
+|                               | transient_lastDdlTime                              | 1627290117                                         |
+|                               | NULL                                               | NULL                                               |
+| # Storage Information         | NULL                                               | NULL                                               |
+| SerDe Library:                | org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe | NULL                                               |
+| InputFormat:                  | org.apache.hadoop.hive.ql.io.RCFileInputFormat     | NULL                                               |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.RCFileOutputFormat    | NULL                                               |
+| Compressed:                   | No                                                 | NULL                                               |
+| Num Buckets:                  | -1                                                 | NULL                                               |
+| Bucket Columns:               | []                                                 | NULL                                               |
+| Sort Columns:                 | []                                                 | NULL                                               |
+| Storage Desc Params:          | NULL                                               | NULL                                               |
+|                               | field.delim                                        | ,                                                  |
+|                               | serialization.format                               | ,                                                  |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+
+
+Hive Query-describe formatted tbl_parquet;
+Query Output-
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+|           col_name            |                     data_type                      |                      comment                       |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+| # col_name                    | data_type                                          | comment                                            |
+| day                           | int                                                |                                                    |
+| month                         | int                                                |                                                    |
+| year                          | int                                                |                                                    |
+|                               | NULL                                               | NULL                                               |
+| # Detailed Table Information  | NULL                                               | NULL                                               |
+| Database:                     | default                                            | NULL                                               |
+| OwnerType:                    | USER                                               | NULL                                               |
+| Owner:                        | hive                                               | NULL                                               |
+| CreateTime:                   | Mon Jul 26 09:07:15 UTC 2021                       | NULL                                               |
+| LastAccessTime:               | UNKNOWN                                            | NULL                                               |
+| Retention:                    | 0                                                  | NULL                                               |
+| Location:                     | hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/tbl_parquet | NULL                                               |
+| Table Type:                   | MANAGED_TABLE                                      | NULL                                               |
+| Table Parameters:             | NULL                                               | NULL                                               |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"day\":\"true\",\"month\":\"true\",\"year\":\"true\"}} |
+|                               | bucketing_version                                  | 2                                                  |
+|                               | numFiles                                           | 0                                                  |
+|                               | numRows                                            | 0                                                  |
+|                               | rawDataSize                                        | 0                                                  |
+|                               | totalSize                                          | 0                                                  |
+|                               | transactional                                      | true                                               |
+|                               | transactional_properties                           | insert_only                                        |
+|                               | transient_lastDdlTime                              | 1627290435                                         |
+|                               | NULL                                               | NULL                                               |
+| # Storage Information         | NULL                                               | NULL                                               |
+| SerDe Library:                | org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe | NULL                                               |
+| InputFormat:                  | org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat | NULL                                               |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat | NULL                                               |
+| Compressed:                   | No                                                 | NULL                                               |
+| Num Buckets:                  | -1                                                 | NULL                                               |
+| Bucket Columns:               | []                                                 | NULL                                               |
+| Sort Columns:                 | []                                                 | NULL                                               |
+| Storage Desc Params:          | NULL                                               | NULL                                               |
+|                               | field.delim                                        | ,                                                  |
+|                               | serialization.format                               | ,                                                  |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+
+
+
+
+************************************Partitioning in Hive**********************************
+
+**********Static Partitioning in Hive******************
+
+
+Hive Query- select * from ind_players;(Main Table which contains loaded data)
+
+Query Output-
++-------------------+--------------------+
+| ind_players.name  | ind_players.place  |
++-------------------+--------------------+
+| kohli             | delhi              |
+| dhawan            | delhi              |
+| dhoni             | jharkand           |
+| kishan            | jharkand           |
+| rahul             | bangalore          |
+| manish            | bangalore          |
+| iyer              | mumbai             |
+| nair              | bangalore          |
+| mayank            | bangalore          |
+| tendulkar         | mumbai             |
++-------------------+--------------------+
+
+Hive Query-show create table state_players_static;
+Query Output-
+
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `state_players_static`(               |
+|   `name` string)                                   |
+| PARTITIONED BY (                                   |
+|   `place` string)                                  |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'  |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/state_players_static' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627759387')            |
++----------------------------------------------------+
+
+
+Hive Query-insert overwrite table state_players_static partition(place='delhi') select name from ind_players where place='delhi';
+Query output- A seperate directory with place='delhi' is created in the table location in hdfs;
+
+
+Hive Query-insert overwrite table state_players_static partition(place='mumbai') select name from ind_players where place='mumbai';
+
+Query output-A seperate directory with place='mumbai' is created in the table location in hdfs;
+
+
+Hive Query-insert overwrite table state_players_static partition(place='bangalore') select name from ind_players where place='bangalore';
+
+Query output-A seperate directory with place='bangalore' is created in the table location in hdfs;
+
+
+Hive Query-insert overwrite table state_players_mumbai partition(place='jharkand') select name from ind_players where place='jharkand';
+
+Query Output-A seperate directory with place='jharkand' is created in the table location in hdfs;
+
+
+Hive Query-select * from state_players_static;
+
+Query Output-
++----------------------------+-----------------------------+
+| state_players_static.name  | state_players_static.place  |
++----------------------------+-----------------------------+
+| rahul                      | bangalore                   |
+| manish                     | bangalore                   |
+| nair                       | bangalore                   |
+| mayank                     | bangalore                   |
+| kohli                      | delhi                       |
+| dhawan                     | delhi                       |
+| dhoni                      | jharkand                    |
+| kishan                     | jharkand                    |
+| iyer                       | mumbai                      |
+| tendulkar                  | mumbai                      |
++----------------------------+-----------------------------+
+
+
+HDFS Command-hdfs dfs -ls /warehouse/tablespace/managed/hive/state_players_static 
+
+Command Output-
+Found 4 items
+drwxr-xr-x+  - hive hadoop          0 2021-07-31 20:09 /warehouse/tablespace/managed/hive/state_players_static/place=bangalore
+drwxr-xr-x+  - hive hadoop          0 2021-07-31 19:51 /warehouse/tablespace/managed/hive/state_players_static/place=delhi
+drwxr-xr-x+  - hive hadoop          0 2021-07-31 20:13 /warehouse/tablespace/managed/hive/state_players_static/place=jharkand
+drwxr-xr-x+  - hive hadoop          0 2021-07-31 20:03 /warehouse/tablespace/managed/hive/state_players_static/place=mumbai
+
+
+
+
+**********************Dynamic Partitioning in Hive *********************
+
+
+Hive Query-select * from ind_players;(main table where input data is loaded)
+
+Query Output-
+
+
++-------------------+--------------------+
+| ind_players.name  | ind_players.place  |
++-------------------+--------------------+
+| kohli             | delhi              |
+| dhawan            | delhi              |
+| dhoni             | jharkand           |
+| kishan            | jharkand           |
+| rahul             | bangalore          |
+| manish            | bangalore          |
+| iyer              | mumbai             |
+| nair              | bangalore          |
+| mayank            | bangalore          |
+| tendulkar         | mumbai             |
++-------------------+--------------------+
+
+
+Hive Query-show create table state_players;
+
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `state_players`(                      |
+|   `name` string)                                   |
+| PARTITIONED BY (                                   |
+|   `place` string)                                  |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'  |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/state_players' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627167951')            |
++----------------------------------------------------+
+
+
+Hive Query- insert into table state_players partition(place) select * from ind_players;
+
+Query Output- The Data is inserted into tables and created seperate directories in the table location;
+
+Hive Query- select * from state_players;
+
+Query Output-
++---------------------+----------------------+
+| state_players.name  | state_players.place  |
++---------------------+----------------------+
+| rahul               | bangalore            |
+| manish              | bangalore            |
+| nair                | bangalore            |
+| mayank              | bangalore            |
+| kohli               | delhi                |
+| dhawan              | delhi                |
+| dhoni               | jharkand             |
+| kishan              | jharkand             |
+| iyer                | mumbai               |
+| tendulkar           | mumbai               |
++---------------------+----------------------+
+
+HDFS Command- hdfs dfs -ls /warehouse/tablespace/managed/hive/state_players/
+
+Command Output-
+
+
+Found 4 items
+drwxr-xr-x+  - hive hadoop          0 2021-07-31 17:27 /warehouse/tablespace/managed/hive/state_players/place=bangalore
+drwxr-xr-x+  - hive hadoop          0 2021-07-31 17:27 /warehouse/tablespace/managed/hive/state_players/place=delhi
+drwxr-xr-x+  - hive hadoop          0 2021-07-31 17:27 /warehouse/tablespace/managed/hive/state_players/place=jharkand
+drwxr-xr-x+  - hive hadoop          0 2021-07-31 17:27 /warehouse/tablespace/managed/hive/state_players/place=mumbai
+
+HDFS Command-hdfs dfs -ls /warehouse/tablespace/managed/hive/place=mumbai/
+
+Command Output-
+
+Found 1 items
+drwxrwxrwx+  - hive hadoop          0 2021-07-31 17:27 /warehouse/tablespace/managed/hive/state_players/place=mumbai/delta_0000011_0000011_0000
+
+HDFS Command-hdfs dfs -ls /warehouse/tablespace/managed/hive/state_players/place=mumbai/delta_0000011_0000011_0000/
+
+Command Output-
+Found 1 items
+-rw-rw-rw-+  1 hive hadoop         15 2021-07-31 17:28 /warehouse/tablespace/managed/hive/state_players/place=mumbai/delta_0000011_0000011_0000/000000_0
+
+
+HDFS Command-hdfs dfs -ls /warehouse/tablespace/managed/hive/state_players/place=mumbai/delta_0000011_0000011_0000/000000_0
+
+Command Output-
+
+iyer
+tendulkar
+
+
+
+***************************Bucketing in Hive*******************************
+
+Unix Command-vi Bucket_Input.csv
+
+Input Data present in the file-
+
+
+1,kohli,delhi
+2,dhawan,delhi
+3,dhoni,jharkand
+4,kishan,jharkand
+5,rahul,bangalore
+6,manish,bangalore
+7,mayank,bangalore
+8,iyer,mumbai
+9,nair,bangalore
+10,tendulkar,mumbai
+
+Hive Query-create table bucketing (id int,name string,place string) clustered by(id) into 2 buckets row format serde  'org.apache.hadoop.hive.serde2.OpenCSVSerde' with SERDEPROPERTIES ('seperatorChar'=',') stored as TEXTFILE;
+
+Query Output -Table is created with following properties;
+
+Hive Query-show create table bucketing;
+Query Output -
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `bucketing`(                          |
+|   `id` string COMMENT 'from deserializer',         |
+|   `name` string COMMENT 'from deserializer',       |
+|   `place` string COMMENT 'from deserializer')      |
+| CLUSTERED BY (                                     |
+|   id)                                              |
+| INTO 2 BUCKETS                                     |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.OpenCSVSerde'     |
+| WITH SERDEPROPERTIES (                             |
+|   'seperatorChar'=',')                             |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/bucketing' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627764848')            |
++----------------------------------------------------+
+
+Hive Query-load data local inpath '/Hive_Practice/Bucket_Input.csv' overwrite into table bucketing;
+Query Output- Data is loaded;
+
+Hive Query-select * from bucketing;
+
+Query Output-
++---------------+-----------------+------------------+
+| bucketing.id  | bucketing.name  | bucketing.place  |
++---------------+-----------------+------------------+
+| 10            | tendulkar       | mumbai           |
+| 9             | nair            | bangalore        |
+| 8             | iyer            | mumbai           |
+| 7             | mayank          | bangalore        |
+| 3             | dhoni           | jharkand         |
+| 1             | kohli           | delhi            |
+| 6             | manish          | bangalore        |
+| 5             | rahul           | bangalore        |
+| 4             | kishan          | jharkand         |
+| 2             | dhawan          | delhi            |
++---------------+-----------------+------------------+
+
+HDFS Command-hdfs dfs -ls /warehouse/tablespace/managed/hive/bucketing/
+
+Command Output-
+Found 1 items
+drwxrwxrwx+  - hive hadoop          0 2021-07-31 20:53 /warehouse/tablespace/managed/hive/bucketing/delta_0000001_0000001_0000
+
+
+HDFS Command -hdfs dfs -ls  /warehouse/tablespace/managed/hive/bucketing/delta_0000001_0000001_0000
+
+Command Output-
+Found 2 items
+-rw-rw-rw-+  1 hive hadoop        137 2021-07-31 20:52 /warehouse/tablespace/managed/hive/bucketing/delta_0000001_0000001_0000/000000_0
+-rw-rw-rw-+  1 hive hadoop         94 2021-07-31 20:53 /warehouse/tablespace/managed/hive/bucketing/delta_0000001_0000001_0000/000001_0
+
+HDFS Command-hdfs dfs -cat /warehouse/tablespace/managed/hive/bucketing/delta_0000001_0000001_0000/000000_0
+
+Command Output-
+"10","tendulkar","mumbai"
+"9","nair","bangalore"
+"8","iyer","mumbai"
+"7","mayank","bangalore"
+"3","dhoni","jharkand"
+"1","kohli","delhi"
+
+
+HDFS Command-hdfs dfs -cat /warehouse/tablespace/managed/hive/bucketing/delta_0000001_0000001_0000/000001_0
+
+Command Output-
+
+"6","manish","bangalore"
+"5","rahul","bangalore"
+"4","kishan","jharkand"
+"2","dhawan","delhi"
+
+
+
+Hive Query-create table insert_command (id int,name string,place string) row format delimited fields terminated by ',' stored as TEXTFILE;
+
+Query Output-Table is created;
+
+Hive Query-show create table insert_command;
+
+Query Output-
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `insert_command`(                     |
+|   `id` int,                                        |
+|   `name` string,                                   |
+|   `place` string)                                  |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'  |
+| WITH SERDEPROPERTIES (                             |
+|   'field.delim'=',',                               |
+|   'serialization.format'=',')                      |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/insert_command' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627777140')            |
++----------------------------------------------------+
+
+Hive Query-insert into table insert_command select * from bucketing;
+
+Query Output- Details has been inserted;
+
+Hive Query-select * from insert_command;
+
+Query Output-
++--------------------+----------------------+-----------------------+
+| insert_command.id  | insert_command.name  | insert_command.place  |
++--------------------+----------------------+-----------------------+
+| 10                 | tendulkar            | mumbai                |
+| 9                  | nair                 | bangalore             |
+| 8                  | iyer                 | mumbai                |
+| 7                  | mayank               | bangalore             |
+| 3                  | dhoni                | jharkand              |
+| 1                  | kohli                | delhi                 |
+| 6                  | manish               | bangalore             |
+| 5                  | rahul                | bangalore             |
+| 4                  | kishan               | jharkand              |
+| 2                  | dhawan               | delhi                 |
++--------------------+----------------------+-----------------------+
+
+***************************************JOINS******************************************
+Unix Command- vi Orders.csv
+
+Command Output-
+
+OrderID,CustomerID,OrderDate
+100,1,10-10-2010
+101,2,11-10-2010
+102,3,12-10-2020
+
+Unix Command-vi Customers.csv
+
+Command Output-
+CustomerID,CustomerName,CustomerAddress
+2,KOHLI,DELHI
+3,DHONI,JHARKAND
+4,Manish,BANGALORE
+
+Hive Query-create table Customers (CustomerID int,CustomerName string,CustomerAddress string) row format serde  'org.apache.hadoop.hive.serde2.OpenCSVSerde' with SERDEPROPERTIES ('seperatorChar'=',') stored as TEXTFILE tblproperties('skip.header.line.count'='1');
+
+Query Output- Table is created;
+
+Hive Query-create table Orders (OrderID int,CustomerID int,OrderDate date) row format serde  'org.apache.hadoop.hive.serde2.OpenCSVSerde' with SERDEPROPERTIES ('seperatorChar'=',') stored as TEXTFILE tblproperties('skip.header.line.count'='1');
+
+Query Output-Table is created;
+
+Hive Query-show create table Orders;
+
+Query Output-
+
+
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `Orders`(                             |
+|   `orderid` string COMMENT 'from deserializer',    |
+|   `customerid` string COMMENT 'from deserializer',  |
+|   `orderdate` string COMMENT 'from deserializer')  |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.OpenCSVSerde'     |
+| WITH SERDEPROPERTIES (                             |
+|   'seperatorChar'=',')                             |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/orders' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'skip.header.line.count'='1',                    |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627787343')            |
++----------------------------------------------------+
+
+Hive Query-show create table Customers;
+
+Query Output-
+
++----------------------------------------------------+
+|                   createtab_stmt                   |
++----------------------------------------------------+
+| CREATE TABLE `Customers`(                          |
+|   `customerid` string COMMENT 'from deserializer',  |
+|   `customername` string COMMENT 'from deserializer',  |
+|   `customeraddress` string COMMENT 'from deserializer') |
+| ROW FORMAT SERDE                                   |
+|   'org.apache.hadoop.hive.serde2.OpenCSVSerde'     |
+| WITH SERDEPROPERTIES (                             |
+|   'seperatorChar'=',')                             |
+| STORED AS INPUTFORMAT                              |
+|   'org.apache.hadoop.mapred.TextInputFormat'       |
+| OUTPUTFORMAT                                       |
+|   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' |
+| LOCATION                                           |
+|   'hdfs://sandbox-hdp.hortonworks.com:8020/warehouse/tablespace/managed/hive/customers' |
+| TBLPROPERTIES (                                    |
+|   'bucketing_version'='2',                         |
+|   'skip.header.line.count'='1',                    |
+|   'transactional'='true',                          |
+|   'transactional_properties'='insert_only',        |
+|   'transient_lastDdlTime'='1627787469')            |
++----------------------------------------------------+
+
+
+Hive Query-load data local inpath '/Hive_Practice/Orders.csv' overwrite into table Orders;
+
+Query Output- Data is loaded into table;
+
+
+Hive Query-load data local inpath '/Hive_Practice/Customers.csv' overwrite into table Customers;
+
+Query Output-Data is loaded into table;
+
+Hive Query-select * from Orders;
+
+Query Output-
++-----------------+--------------------+-------------------+
+| orders.orderid  | orders.customerid  | orders.orderdate  |
++-----------------+--------------------+-------------------+
+| 100             | 1                  | 10-10-2010        |
+| 101             | 2                  | 11-10-2010        |
+| 102             | 3                  | 12-10-2020        |
++-----------------+--------------------+-------------------+
+
+Hive Query-select * from Customers;
+
+Query Output-
++-----------------------+-------------------------+----------------------------+
+| customers.customerid  | customers.customername  | customers.customeraddress  |
++-----------------------+-------------------------+----------------------------+
+| 2                     | KOHLI                   | DELHI                      |
+| 3                     | DHONI                   | JHARKAND                   |
+| 4                     | Manish                  | BANGALORE                  |
++-----------------------+-------------------------+----------------------------+
+
+
+Hive Query-select Customers.CustomerName from Customers inner join Orders on Customers.CustomerID = Orders.CustomerID;
+
+Query Output-
++-------------------------+
+| customers.customername  |
++-------------------------+
+| KOHLI                   |
+| DHONI                   |
++-------------------------+
+
+Hive Query-select Customers.CustomerName from Customers full join Orders on Customers.CustomerID = Orders.CustomerID;
+
+Query Output-
++-------------------------+
+| customers.customername  |
++-------------------------+
+| DHONI                   |
+| NULL                    |
+| KOHLI                   |
+| Manish                  |
++-------------------------+
+
+Hive Query-select Customers.CustomerName from Customers left join Orders on Customers.CustomerID=Orders.CustomerID;
+
+Query Output-
++-------------------------+
+| customers.customername  |
++-------------------------+
+| KOHLI                   |
+| DHONI                   |
+| Manish                  |
++-------------------------+
+
+Hive Query-select Orders.CustomerID from Customers right join Orders on Customers.CustomerID=Orders.CustomerID;
+
+Query Output-
++--------------------+
+| orders.customerid  |
++--------------------+
+| 1                  |
+| 2                  |
+| 3                  |
++--------------------+
