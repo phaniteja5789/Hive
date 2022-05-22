@@ -17,9 +17,9 @@ This repository contains
 6.) Data Manipulation Language Commands like insert
 
 7.) Joining of Tables
-
-  7.1) Inner Join
-  7.2) Full Join
+	Types of JOINS
+  7.1) Full Join
+  7.2) Inner Join
   7.3) Left Join
   7.4) Right Join
 
