@@ -22,5 +22,5 @@ This repository contains
   7.2) Inner Join
   7.3) Left Join
   7.4) Right Join
-
-Sample Hive Statements for Practice
+Each Topic contains example
+Tez is used as Execution Engine
