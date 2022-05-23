@@ -22,5 +22,4 @@ This repository contains
   7.2) Inner Join
   7.3) Left Join
   7.4) Right Join
-Each Topic contains example
-Tez is used as Execution Engine
+Big Data Platforms uses either Tez or Map Reduce apart from Spark as Execution Engine
