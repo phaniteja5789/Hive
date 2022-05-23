@@ -23,4 +23,4 @@ This repository contains
   7.3) Left Join
   7.4) Right Join
 
-Sample Hive Statements for Practice
+Big Data Platforms uses either Tez or Map Reduce apart from Spark as Execution Engine
