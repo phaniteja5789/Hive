@@ -1,1 +1,1 @@
-I am adding this revert file into Remote Repository and created a new branch
+I am adding this revert file into Remote Repository
